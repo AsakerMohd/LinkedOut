@@ -15,7 +15,6 @@
 #import <React/RCTPointerEvents.h>
 #import <React/RCTTextDecorationLineType.h>
 #import <yoga/Yoga.h>
-#import <WebKit/WebKit.h>
 
 /**
  * This class provides a collection of conversion functions for mapping
@@ -69,10 +68,6 @@ typedef NSURL RCTFileURL;
 + (UIReturnKeyType)UIReturnKeyType:(id)json;
 #if !TARGET_OS_TV
 + (UIDataDetectorTypes)UIDataDetectorTypes:(id)json;
-#endif
-
-#if TARGET_OS_IPHONE && WEBKIT_IOS_10_APIS_AVAILABLE
-+ (WKDataDetectorTypes)WKDataDetectorTypes:(id)json;
 #endif
 
 + (UIViewContentMode)UIViewContentMode:(id)json;

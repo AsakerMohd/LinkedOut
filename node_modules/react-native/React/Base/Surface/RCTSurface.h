@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RCTSurface : NSObject
 
 @property (atomic, readonly) RCTSurfaceStage stage;
+@property (atomic, readonly) RCTBridge *bridge;
 @property (atomic, readonly) NSString *moduleName;
 @property (atomic, readonly) NSNumber *rootViewTag;
 

@@ -67,7 +67,7 @@ RCT_EXPORT_MODULE()
 
 + (BOOL)application:(UIApplication *)application
 continueUserActivity:(NSUserActivity *)userActivity
-  restorationHandler:(void (^)(NSArray * __nullable))restorationHandler
+  restorationHandler:(void (^)(NSArray *))restorationHandler
 {
   if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]) {
     NSDictionary *payload = @{@"url": userActivity.webpageURL.absoluteString};

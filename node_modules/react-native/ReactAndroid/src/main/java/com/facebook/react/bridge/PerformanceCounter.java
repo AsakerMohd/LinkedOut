@@ -9,9 +9,5 @@ package com.facebook.react.bridge;
 import java.util.Map;
 
 public interface PerformanceCounter {
-
-  void profileNextBatch();
-
-  Map<String, Long> getPerformanceCounters();
-
+  public Map<String, Long> getPerformanceCounters();
 }

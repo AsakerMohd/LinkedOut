@@ -121,6 +121,12 @@
 
 #pragma mark - Overrides
 
+- (void)setSelectedTextRange:(UITextRange *)selectedTextRange
+{
+  [super setSelectedTextRange:selectedTextRange];
+  [_textInputDelegateAdapter selectedTextRangeWasSet];
+}
+
 - (void)setSelectedTextRange:(UITextRange *)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
 {
   if (!notifyDelegate) {

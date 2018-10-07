@@ -11,8 +11,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <Photos/Photos.h>
-#import <dlfcn.h>
-#import <objc/runtime.h>
 
 #import <React/RCTBridge.h>
 #import <React/RCTConvert.h>
@@ -46,52 +44,22 @@ RCT_ENUM_CONVERTER(ALAssetsGroupType, (@{
 
 }), ALAssetsGroupSavedPhotos, integerValue)
 
-static Class _ALAssetsFilter = nil;
-static NSString *_ALAssetsGroupPropertyName = nil;
-static NSString *_ALAssetPropertyAssetURL = nil;
-static NSString *_ALAssetPropertyLocation = nil;
-static NSString *_ALAssetPropertyDate = nil;
-static NSString *_ALAssetPropertyType = nil;
-static NSString *_ALAssetPropertyDuration = nil;
-static NSString *_ALAssetTypeVideo = nil;
-static NSString *lookupNSString(void * handle, const char * name)
-{
-  void ** sym = dlsym(handle, name);
-  return (__bridge NSString *)(sym ? *sym : nil);
-}
-static void ensureAssetsLibLoaded(void)
-{
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    void * handle = dlopen("/System/Library/Frameworks/AssetsLibrary.framework/AssetsLibrary", RTLD_LAZY);
-    RCTAssert(handle != NULL, @"Unable to load AssetsLibrary.framework.");
-    _ALAssetsFilter = objc_getClass("ALAssetsFilter");
-    _ALAssetsGroupPropertyName = lookupNSString(handle, "ALAssetsGroupPropertyName");
-    _ALAssetPropertyAssetURL = lookupNSString(handle, "ALAssetPropertyAssetURL");
-    _ALAssetPropertyLocation = lookupNSString(handle, "ALAssetPropertyLocation");
-    _ALAssetPropertyDate = lookupNSString(handle, "ALAssetPropertyDate");
-    _ALAssetPropertyType = lookupNSString(handle, "ALAssetPropertyType");
-    _ALAssetPropertyDuration = lookupNSString(handle, "ALAssetPropertyDuration");
-    _ALAssetTypeVideo = lookupNSString(handle, "ALAssetTypeVideo");
-  });
-}
-
 + (ALAssetsFilter *)ALAssetsFilter:(id)json
 {
   static NSDictionary<NSString *, ALAssetsFilter *> *options;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    ensureAssetsLibLoaded();
     options = @{
+
       // New values
-      @"photos": [_ALAssetsFilter allPhotos],
-      @"videos": [_ALAssetsFilter allVideos],
-      @"all": [_ALAssetsFilter allAssets],
+      @"photos": [ALAssetsFilter allPhotos],
+      @"videos": [ALAssetsFilter allVideos],
+      @"all": [ALAssetsFilter allAssets],
 
       // Legacy values
-      @"Photos": [_ALAssetsFilter allPhotos],
-      @"Videos": [_ALAssetsFilter allVideos],
-      @"All": [_ALAssetsFilter allAssets],
+      @"Photos": [ALAssetsFilter allPhotos],
+      @"Videos": [ALAssetsFilter allVideos],
+      @"All": [ALAssetsFilter allAssets],
     };
   });
 
@@ -100,7 +68,7 @@ static void ensureAssetsLibLoaded(void)
     RCTLogError(@"Invalid filter option: '%@'. Expected one of 'photos',"
                 "'videos' or 'all'.", json);
   }
-  return filter ?: [_ALAssetsFilter allPhotos];
+  return filter ?: [ALAssetsFilter allPhotos];
 }
 
 @end
@@ -181,7 +149,6 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)params
 {
   checkPhotoLibraryConfig();
 
-  ensureAssetsLibLoaded();
   NSUInteger first = [RCTConvert NSInteger:params[@"first"]];
   NSString *afterCursor = [RCTConvert NSString:params[@"after"]];
   NSString *groupName = [RCTConvert NSString:params[@"groupName"]];
@@ -194,12 +161,12 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)params
   NSMutableArray<NSDictionary<NSString *, id> *> *assets = [NSMutableArray new];
 
   [_bridge.assetsLibrary enumerateGroupsWithTypes:groupTypes usingBlock:^(ALAssetsGroup *group, BOOL *stopGroups) {
-    if (group && (groupName == nil || [groupName isEqualToString:[group valueForProperty:_ALAssetsGroupPropertyName]])) {
+    if (group && (groupName == nil || [groupName isEqualToString:[group valueForProperty:ALAssetsGroupPropertyName]])) {
 
       [group setAssetsFilter:assetType];
       [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stopAssets) {
         if (result) {
-          NSString *uri = ((NSURL *)[result valueForProperty:_ALAssetPropertyAssetURL]).absoluteString;
+          NSString *uri = ((NSURL *)[result valueForProperty:ALAssetPropertyAssetURL]).absoluteString;
           if (afterCursor && !foundAfter) {
             if ([afterCursor isEqualToString:uri]) {
               foundAfter = YES;
@@ -216,18 +183,18 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)params
             return;
           }
           CGSize dimensions = [result defaultRepresentation].dimensions;
-          CLLocation *loc = [result valueForProperty:_ALAssetPropertyLocation];
-          NSDate *date = [result valueForProperty:_ALAssetPropertyDate];
+          CLLocation *loc = [result valueForProperty:ALAssetPropertyLocation];
+          NSDate *date = [result valueForProperty:ALAssetPropertyDate];
           NSString *filename = [result defaultRepresentation].filename;
           int64_t duration = 0;
-          if ([[result valueForProperty:_ALAssetPropertyType] isEqualToString:_ALAssetTypeVideo]) {
-            duration = [[result valueForProperty:_ALAssetPropertyDuration] intValue];
+          if ([[result valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]) {
+            duration = [[result valueForProperty:ALAssetPropertyDuration] intValue];
           }
 
           [assets addObject:@{
             @"node": @{
-              @"type": [result valueForProperty:_ALAssetPropertyType],
-              @"group_name": [group valueForProperty:_ALAssetsGroupPropertyName],
+              @"type": [result valueForProperty:ALAssetPropertyType],
+              @"group_name": [group valueForProperty:ALAssetsGroupPropertyName],
               @"image": @{
                 @"uri": uri,
                 @"filename" : filename ?: [NSNull null],

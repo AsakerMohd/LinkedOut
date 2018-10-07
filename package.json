@@ -1,26 +1,25 @@
 {
-  "name": "LinkedOut",
-  "version": "0.0.1",
+  "name": "my-new-project",
+  "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.1.2",
-    "react": "16.5.0",
-    "react-native": "0.57.1",
-    "react-navigation": "^2.17.0"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-jest": "23.6.0",
-    "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.47.0",
-    "react-test-renderer": "16.5.0"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject",
+    "test": "node ./node_modules/jest/bin/jest.js --watchAll"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "@expo/samples": "2.1.1",
+    "expo": "^30.0.1",
+    "react": "16.3.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "react-navigation": "^2.16.0"
+  },
+  "devDependencies": {
+    "jest-expo": "30.0.0"
   }
 }

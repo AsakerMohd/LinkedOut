@@ -81,7 +81,7 @@ public class BlobModule extends ReactContextBaseJavaModule {
         String scheme = uri.getScheme();
         boolean isRemote = "http".equals(scheme) || "https".equals(scheme);
 
-        return (!isRemote && "blob".equals(responseType));
+        return (!isRemote && responseType.equals("blob"));
       }
 
       @Override
@@ -133,7 +133,7 @@ public class BlobModule extends ReactContextBaseJavaModule {
     new NetworkingModule.ResponseHandler() {
       @Override
       public boolean supports(String responseType) {
-        return "blob".equals(responseType);
+        return responseType.equals("blob");
       }
 
       @Override
@@ -236,7 +236,7 @@ public class BlobModule extends ReactContextBaseJavaModule {
   }
 
   private String getNameFromUri(Uri contentUri) {
-    if ("file".equals(contentUri.getScheme())) {
+    if (contentUri.getScheme().equals("file")) {
       return contentUri.getLastPathSegment();
     }
     String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
@@ -256,7 +256,7 @@ public class BlobModule extends ReactContextBaseJavaModule {
   }
 
   private long getLastModifiedFromUri(Uri contentUri) {
-    if ("file".equals(contentUri.getScheme())) {
+    if (contentUri.getScheme().equals("file")) {
       return new File(contentUri.toString()).lastModified();
     }
     return 0;

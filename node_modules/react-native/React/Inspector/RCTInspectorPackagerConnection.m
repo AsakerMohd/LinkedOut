@@ -95,11 +95,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (void)handleConnect:(NSDictionary *)payload
 {
   NSString *pageId = payload[@"pageId"];
-  RCTInspectorLocalConnection *existingConnection = _inspectorConnections[pageId];
-  if (existingConnection) {
+  if (_inspectorConnections[pageId]) {
     [_inspectorConnections removeObjectForKey:pageId];
-    [existingConnection disconnect];
-    RCTLogWarn(@"Already connected: %@", pageId);
+    RCTLogError(@"Already connected: %@", pageId);
     return;
   }
 

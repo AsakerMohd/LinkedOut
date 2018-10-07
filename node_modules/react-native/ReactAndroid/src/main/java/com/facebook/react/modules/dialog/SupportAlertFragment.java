@@ -9,7 +9,6 @@ package com.facebook.react.modules.dialog;
 
 import javax.annotation.Nullable;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ public class SupportAlertFragment extends DialogFragment implements DialogInterf
       mListener = null;
   }
 
-  @SuppressLint("ValidFragment")
   public SupportAlertFragment(@Nullable DialogModule.AlertFragmentListener listener, Bundle arguments) {
     mListener = listener;
     setArguments(arguments);

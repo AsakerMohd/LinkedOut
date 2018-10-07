@@ -26,6 +26,7 @@ import com.facebook.react.modules.core.Timing;
 import com.facebook.react.modules.debug.SourceCodeModule;
 import com.facebook.react.modules.deviceinfo.DeviceInfoModule;
 import com.facebook.react.modules.systeminfo.AndroidInfoModule;
+import com.facebook.react.uimanager.UIImplementationProvider;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.systrace.Systrace;
@@ -53,16 +54,19 @@ import javax.inject.Provider;
 
   private final ReactInstanceManager mReactInstanceManager;
   private final DefaultHardwareBackBtnHandler mHardwareBackBtnHandler;
+  private final UIImplementationProvider mUIImplementationProvider;
   private final boolean mLazyViewManagersEnabled;
   private final int mMinTimeLeftInFrameForNonBatchedOperationMs;
 
   CoreModulesPackage(
       ReactInstanceManager reactInstanceManager,
       DefaultHardwareBackBtnHandler hardwareBackBtnHandler,
+      UIImplementationProvider uiImplementationProvider,
       boolean lazyViewManagersEnabled,
       int minTimeLeftInFrameForNonBatchedOperationMs) {
     mReactInstanceManager = reactInstanceManager;
     mHardwareBackBtnHandler = hardwareBackBtnHandler;
+    mUIImplementationProvider = uiImplementationProvider;
     mLazyViewManagersEnabled = lazyViewManagersEnabled;
     mMinTimeLeftInFrameForNonBatchedOperationMs = minTimeLeftInFrameForNonBatchedOperationMs;
   }
@@ -161,11 +165,13 @@ import javax.inject.Provider;
         return new UIManagerModule(
             reactContext,
             resolver,
+            mUIImplementationProvider,
             mMinTimeLeftInFrameForNonBatchedOperationMs);
       } else {
         return new UIManagerModule(
             reactContext,
             mReactInstanceManager.getOrCreateViewManagers(reactContext),
+            mUIImplementationProvider,
             mMinTimeLeftInFrameForNonBatchedOperationMs);
       }
     } finally {

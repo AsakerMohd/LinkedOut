@@ -22,6 +22,7 @@ import com.facebook.react.testing.AssertModule;
 import com.facebook.react.testing.FakeWebSocketModule;
 import com.facebook.react.testing.ReactIntegrationTestCase;
 import com.facebook.react.testing.ReactTestHelper;
+import com.facebook.react.uimanager.UIImplementationProvider;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.ViewManager;
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class CatalystNativeJavaToJSReturnValuesTestCase extends ReactIntegration
 
     final UIManagerModule mUIManager =
         new UIManagerModule(
-            getContext(), new ArrayList<ViewManager>(), 0);
+            getContext(), new ArrayList<ViewManager>(), new UIImplementationProvider(), 0);
 
     mAssertModule = new AssertModule();
 

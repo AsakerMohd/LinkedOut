@@ -6,7 +6,6 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <React/RCTComponent.h>
 
 /**
  * Contains any methods related to scrolling. Any `RCTView` that has scrolling
@@ -27,15 +26,5 @@
 
 - (void)addScrollListener:(NSObject<UIScrollViewDelegate> *)scrollListener;
 - (void)removeScrollListener:(NSObject<UIScrollViewDelegate> *)scrollListener;
-
-@end
-
-/**
- * Denotes a view which implements custom pull to refresh functionality.
- */
-@protocol RCTCustomRefreshContolProtocol
-
-@property (nonatomic, copy) RCTDirectEventBlock onRefresh;
-@property (nonatomic, readonly, getter=isRefreshing) BOOL refreshing;
 
 @end

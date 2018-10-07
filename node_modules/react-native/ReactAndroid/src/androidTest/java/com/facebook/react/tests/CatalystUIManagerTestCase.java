@@ -22,6 +22,7 @@ import com.facebook.react.testing.FakeWebSocketModule;
 import com.facebook.react.testing.ReactIntegrationTestCase;
 import com.facebook.react.testing.ReactTestHelper;
 import com.facebook.react.uimanager.PixelUtil;
+import com.facebook.react.uimanager.UIImplementationProvider;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.views.text.ReactRawTextManager;
@@ -76,7 +77,7 @@ public class CatalystUIManagerTestCase extends ReactIntegrationTestCase {
         new ReactTextViewManager(),
         new ReactRawTextManager());
     uiManager =
-        new UIManagerModule(getContext(), viewManagers, 0);
+        new UIManagerModule(getContext(), viewManagers, new UIImplementationProvider(), 0);
     UiThreadUtil.runOnUiThread(new Runnable() {
       @Override
       public void run() {
