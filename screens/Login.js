@@ -19,6 +19,19 @@ export default class Login extends React.Component {
     title: 'Login',
   };
 
+  state = {
+      username: '',
+      password: ''
+   };
+
+   handleUsername = (text) => {
+      this.setState({ username: text })
+   }
+
+   handlePassword = (text) => {
+      this.setState({ password: text })
+   }
+
   render() {
 
     return (
@@ -35,12 +48,14 @@ export default class Login extends React.Component {
                    placeholder = "username or email"
                    placeholderTextColor = 'rgba(255, 255, 255, 0.2)'
                    style = {styles.input}
+                   onChangeText = {this.handleUsername}
                />
                <TextInput
                    placeholder = "password"
                    placeholderTextColor = 'rgba(255, 255, 255, 0.2)'
                    secureTextEntry
                    style = {styles.input}
+                   onChangeText = {this.handlePassword}
                />
                <Button
                   title = "Login"
@@ -64,10 +79,54 @@ export default class Login extends React.Component {
   signIn = async () => {
 
      await AsyncStorage.setItem('userToken', 'abc');
-     this.props.navigation.navigate('Main');
+     //this.props.navigation.navigate('Main');
+
+     var settings = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/JSON'
+  },
+  body: JSON.stringify({
+    'email' : this.state.username,
+    'password' : this.state.password
+    })
+  };
+
+fetch('https://networkinc.azurewebsites.net/api/user/login', settings)
+.then(response => console.log('Success:', JSON.stringify(response)))
+.then( 
+
+  function(response){
+
+  if (response.success == 'true') {
+    this.props.navigation.navigate('Main', {token: response.token});
+  } else {
+
+    switch (response.error) 
+    {
+    case 'Not registered': 
+      alert("This Username is not registered\nGo to \"Register\" to make an account");
+      break;
+    case 'invalid password':
+      alert("Incorrect password");
+      break;
+    case 'Please enter a password to login':
+      alert("Please enter your password");
+      break;
+    case 'Please enter an email to login':
+      alert("Please enter your email");
+      break;
+    }
+  }
+}
+  )
+.catch(error => console.error('Error:', error));
+
+
      
 
    };
+
    Register = async () => {
 
       await AsyncStorage.setItem('userToken', 'xyz123');

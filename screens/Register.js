@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Swiper from 'react-native-swiper';
 
 import {
   ActivityIndicator,
@@ -18,9 +19,31 @@ export default class Register extends React.Component {
     title: 'Register',
   };
 
+  state = {
+      username: '',
+      password: '',
+      repassword: '',
+   };
+
+   handleUsername = (text) => {
+      this.setState({ username: text })
+   }
+
+   handlePassword = (text) => {
+      this.setState({ password: text })
+   }
+
+   handleRepassword = (text) => {
+      this.setState({ repassword: text })
+   }
+
   render() {
 
     return (
+      <Swiper
+        loop={false}
+        showsPagination={false}
+        index={0}>
       <View style = {styles1.contaier}>
         <View style = {styles1.logoContainer}>
             <Image
@@ -28,26 +51,53 @@ export default class Register extends React.Component {
             source ={require('../images/Nexus.png')} />
         </View>
         <View style = {styles1.formContainer}>
-        <KeyboardAvoidingView behavior = "padding" style = {styles.containter}>
+        
            <View style = {styles.containter}>
+           <KeyboardAvoidingView behavior = "padding" style = {styles.containter}>
+               
                <TextInput
-                   placeholder = "First Name"
+                   placeholder = "Email Address"
                    placeholderTextColor = 'rgba(255, 255, 255, 0.2)'
                    style = {styles.input}
-               />
+                   onChangeText = {this.handleUsername}
+                   />
+                   
                <TextInput
-                   placeholder = "Last Name"
-                   placeholderTextColor = 'rgba(255, 255, 255, 0.2)'
-                   style = {styles.input}
-               />
-               <TextInput
-                   placeholder = "username"
+                   placeholder = "Password"
                    placeholderTextColor = 'rgba(255, 255, 255, 0.2)'
                    secureTextEntry
                    style = {styles.input}
+                   onChangeText = {this.handlePassword}
                />
                <TextInput
-                   placeholder = "password"
+                   placeholder = "Confirm Password"
+                   placeholderTextColor = 'rgba(255, 255, 255, 0.2)'
+                   secureTextEntry
+                   style = {styles.input}
+                   onChangeText = {this.handleRepassword}
+               />
+               </KeyboardAvoidingView>
+           </View>
+        
+        </View>
+      </View>
+      <View style = {styles1.contaier}>
+        <View style = {styles1.logoContainer}>
+            <Image
+            style = {styles1.logoImage}
+            source ={require('../images/Nexus.png')} />
+        </View>
+        <View style = {styles1.formContainer}>
+
+           <View style = {styles.containter}>
+               
+               <TextInput
+                   placeholder = "location"
+                   placeholderTextColor = 'rgba(255, 255, 255, 0.2)'
+                   style = {styles.input}
+                   />
+               <TextInput
+                   placeholder = "Interests"
                    placeholderTextColor = 'rgba(255, 255, 255, 0.2)'
                    secureTextEntry
                    style = {styles.input}
@@ -58,15 +108,42 @@ export default class Register extends React.Component {
                   onPress = {this.Register}
                />
            </View>
-        </KeyboardAvoidingView>
+        
         </View>
       </View>
+      </Swiper>
     );
   }
   Register = async () => {
       //////////////////////REGISTRATION API CALL////////////////////////////
      await AsyncStorage.setItem('userToken', 'xyz123');
-     this.props.navigation.navigate('Main');
+     //this.props.navigation.navigate('Main');
+     //"url": "https://networkinc.azurewebsites.net/api/user",
+     //alert(this.state.username + this.state.password);
+
+if (this.state.password == this.state.repassword) {
+
+  var settings = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/JSON'
+  },
+  body: JSON.stringify({
+    'email' : this.state.username,
+    'password' : this.state.password
+    })
+  };
+
+fetch('https://networkinc.azurewebsites.net/api/user', settings)
+.then(response => this.props.navigation.navigate('Main', {token: response.token}))
+.catch(error => console.error('Error:', error));
+
+} else {
+
+alert("Passwords do not match!\nPlease try again.");
+
+}
+
 
    };
 }
